@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>学有所得</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="">
+</head>
+<script src="js/vue.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<link href="css/font-awesome.min.css" rel="stylesheet">
+<style>
+  a img {
+    width: 650px;
+    height: 300px;
+    border-radius: 5px;
+  }
+  a :hover{
+  transform: scale(1.03);
+  }
+</style>
+
+<body>
+  <header id="header" style="position: relative">
+  </header>
+  <div class="container"  id='main'>
+      <div class="col-md-9" style="padding-left:9vw;padding-right: 8vw" id='questin' >
+        <div v-for="item in json" transition name="fade">
+          <div >
+              <a :href=' item.url'target="_blank">
+                  <img :src="item.url+'index.png'" alt="">
+                  <h3 style="padding-top: 5px">{{item.title}}</h3>
+                </a>
+               <a :href="item.kind" class="text-muted">{{item.kind}}</a>
+                <i class="fa fa-calendar" style="padding-left: 10px"></i>
+               <span class="text-muted">{{item.creatime}}</span>
+               <i class="fa fa-clock-o" style="padding-left:20px" v-if="item.show"></i>
+               <span class="text-muted">{{item.updatime}}</span>
+               <hr style="border:none">
+          </div>
+      </div>
+    </div>
+  </div>
+  <footer></footer>
+</body>
+<script>
+  var init = new Vue({
+    el: '#main',
+    data: {
+      json:[
+      ]
+    },
+    methods: {
+      update: function () {
+        $.get("config/xue.json", function (r) {
+          r.art.forEach(element => {
+            console.log(element.updatime);
+            if(element.updatime!="null"){
+              element.show=true;
+            }
+            else{
+              element.updatime='';
+            }
+          });
+          Vue.set(init, 'json', r.art);
+            console.log(init.json);
+        })
+      }
+    }
+  })
+</script>
+<script>
+  $(function () {
+    init.update();
+  })
+  $.get('header.html', function (res) {
+    $("#header").html(res);
+    $("#article").addClass('active');
+  })
+  $('footer').load('backtotop.html');
+</script>
+
+</html>
