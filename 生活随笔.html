@@ -2,16 +2,16 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>学有所得</title>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <title>生活随笔</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
   <link rel="icon" href="favicon.ico">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="">
 </head>
-<script src="js/vue.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<link href="css/font-awesome.min.css" rel="stylesheet">
+<script src="vue.min.js"></script>
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<link href="font-awesome.min.css" rel="stylesheet">
 <style>
   a img {
     width: 650px;
@@ -26,8 +26,8 @@
 <body>
   <header id="header" style="position: relative">
   </header>
-  <div class="container"  id='main'>
-      <div class="col-md-9" style="padding-left:9vw;padding-right: 8vw" id='questin' >
+  <div style="margin: auto;max-width: 650px;"  id='main'>
+      <div  id='questin' >
         <div v-for="item in json" transition name="fade">
           <div >
               <a :href=' item.url'target="_blank">
@@ -55,7 +55,7 @@
     },
     methods: {
       update: function () {
-        $.get("config/xue.json", function (r) {
+        $.get("config/生活随笔.json", function (r) {
           r.art.forEach(element => {
             console.log(element.updatime);
             if(element.updatime!="null"){
