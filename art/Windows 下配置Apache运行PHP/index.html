@@ -3,6 +3,7 @@
 <head>
 <title>Windows 下配置Apache运行PHP</title>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
 <style>
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -389,40 +390,55 @@ blockquote {
 <h2 id="%E9%A6%96%E5%85%88%E9%9C%80%E8%A6%81%E5%87%86%E5%A4%87%E7%9A%84%E6%96%87%E4%BB%B6">首先需要准备的文件</h2>
 <ul>
 <li>
-<p>你的电脑需要具备PHP开发环境，如果不具备，可以参考我的上一篇文章<a href="../VS Code配置PHP/">VS Code配置PHP</a></p>
+<p>你的电脑需要具备PHP开发环境，如果不具备，可以参考我的上一篇文章[VS Code配置PHP](../VS Code配置PHP/)</p>
 </li>
 <li>
-<p>Apache 下载地址 <a href="https://www.apachehaus.com/cgi-bin/download.plx">https://www.apachehaus.com/cgi-bin/download.plx</a>
-<img src="i/17890238-fcede071a77e554f.png" alt="选择你所需要的，如果你不知道需要哪个,那就下第一个">
-我也传了一个蓝奏云，<a href="https://www.lanzous.com/i5cns8b">https://www.lanzous.com/i5cns8b</a></p>
+<p>Apache 下载地址 <a href="https://www.apachehaus.com/cgi-bin/download.plx">https://www.apachehaus.com/cgi-bin/download.plx</a></p>
 </li>
 </ul>
+<p><img src="i/17890238-fcede071a77e554f.png" alt="选择你所需要的，如果你不知道需要哪个,那就下第一个"></p>
+<p>我也传了一个蓝奏云，<a href="https://www.lanzous.com/i5cns8b">https://www.lanzous.com/i5cns8b</a></p>
 <h2 id="%E5%BC%80%E5%A7%8B%E9%85%8D%E7%BD%AE">开始配置</h2>
-<p>在解压出来的Apache <code>conf</code>目录下，找到<code>httpd.conf</code>并打开,将<code>Define SRVROOT</code>后改为自己的APache 绝对位置，图片为我的目录位置<img src="i/17890238-181dd59c44f56808.png" alt="">更改<code>serverName</code>如图，图片中默认使用80端口，如需更改，更改即可<img src="i/17890238-e2c7ce25e6867821.png" alt="">
-如果你想指定你编写网页的路径，即Apache打开的默认位置，需要修改<code>DocumentRoot</code>项为指定绝对目录，默认为Apache 下的<code>htdocs</code>目录。比如我修改为<img src="i/17890238-c4a824fe83c0119e.png" alt="">可以更改默认打开的文件，默认为 DocumentRoot 目录下index.html<img src="i/17890238-0ab4b7ca9d523d1e.png" alt=""></p>
-<p>然后拉到最下面，将<code>Include conf/extra/httpd-fcgid.conf</code>取消注释，该项待会用来指定PHP目录。如图<img src="i/17890238-7fe827dcea098636.png" alt="">然后我们在extra文件夹下找到<code>httpd-fcgid.conf</code>，将<code>Define PHPLOC</code>后改为自己的PHP绝对路径，如图为我的PHP目录<img src="i/17890238-7d723ca2d208db51.png" alt="">
-目前我就修改了这些，能够很好的满足我的需求，若你还有其他需求，仔细看看配置的注释，说不定会找到答案。</p>
+<p>在解压出来的Apache <code>conf</code>目录下，找到<code>httpd.conf</code>并打开,将<code>Define SRVROOT</code>后改为自己的APache 绝对位置，图片为我的目录位置</p>
+<p><img src="i/17890238-181dd59c44f56808.png" alt=""></p>
+<p>更改<code>serverName</code>如图，图片中默认使用80端口，如需更改，更改即可</p>
+<p><img src="i/17890238-e2c7ce25e6867821.png" alt=""></p>
+<p>如果你想指定你编写网页的路径，即Apache打开的默认位置，需要修改<code>DocumentRoot</code>项为指定绝对目录，默认为Apache 下的<code>htdocs</code>目录。
+比如我修改为</p>
+<p><img src="i/17890238-c4a824fe83c0119e.png" alt=""></p>
+<p>可以更改默认打开的文件，默认为 DocumentRoot 目录下index.html</p>
+<p><img src="i/17890238-0ab4b7ca9d523d1e.png" alt=""></p>
+<p>然后拉到最下面，将<code>Include conf/extra/httpd-fcgid.conf</code>取消注释，该项待会用来指定PHP目录。如图</p>
+<p><img src="i/17890238-7fe827dcea098636.png" alt=""></p>
+<p>然后我们在extra文件夹下找到<code>httpd-fcgid.conf</code>，将<code>Define PHPLOC</code>后改为自己的PHP绝对路径，如图为我的PHP目录</p>
+<p><img src="i/17890238-7d723ca2d208db51.png" alt=""></p>
+<p>目前我就修改了这些，能够很好的满足我的需求，若你还有其他需求，仔细看看配置的注释，说不定会找到答案。</p>
 <ul>
 <li>下面开始安装
-为了方便，将<code>httpd</code>所在的bin目录添加到环境变量
-<img src="i/17890238-5d5daf3243584308.png" alt="添加环境变量">
-使用管理员权限运行powershell 执行如下两条命令，可以将运行powershell所在的目录添加到环境变量</li>
+为了方便，将<code>httpd</code>所在的bin目录添加到环境变量</li>
 </ul>
+<p><img src="i/17890238-5d5daf3243584308.png" alt="添加环境变量"></p>
+<p>使用管理员权限运行powershell 执行如下两条命令，可以将运行powershell所在的目录添加到环境变量</p>
 <pre class="hljs"><code><div>$p1=[Environment]::GetEnvironmentvariable(&quot;Path&quot;, &quot;Machine&quot;)
 [environment]::SetEnvironmentvariable(&quot;Path&quot;,$p1+ &quot;;$pwd&quot;,[System.EnvironmentVariableTarget]::Machine)
 </div></code></pre>
 <blockquote>
 <p><img src="i/17890238-3a4767e385371851.png" alt="可以将图中红色部分添加到Path"></p>
 </blockquote>
-<p>首先，在powershell中输入<code>httpd -t</code>来检查配置是否存在问题，若显示OK，<img src="i/17890238-aecfe56d6c20bfe8.png" alt="OK">
-即可进行安装，输入<code>httpd -k install</code>安装Apache，安装完成，<code>httpd -k start</code>启动服务,也可以到bin目录下找到ApacheMonitor启动服务、查看服务状态<img src="i/17890238-4e9fe00379516786.png" alt="">
-如果你未更改<code>DocumentRoot</code>在浏览器输入<code>localhost</code>可以看到<img src="i/17890238-5f02e951e4a62c29.png" alt="未更改目录">
-我更改了目录，并且目录下没有 index.html，会显示<code>DocumentRoot</code>目录，如图<img src="i/17890238-b990fa54350b8418.png" alt=""></p>
+<p>首先，在powershell中输入<code>httpd -t</code>来检查配置是否存在问题，若显示OK，</p>
+<p><img src="i/17890238-aecfe56d6c20bfe8.png" alt="OK"></p>
+<p>即可进行安装，输入<code>httpd -k install</code>安装Apache，安装完成，<code>httpd -k start</code>启动服务,也可以到bin目录下找到ApacheMonitor启动服务、查看服务状态</p>
+<p><img src="i/17890238-4e9fe00379516786.png" alt=""></p>
+<p>如果你未更改<code>DocumentRoot</code>在浏览器输入<code>localhost</code>可以看到</p>
+<p><img src="i/17890238-5f02e951e4a62c29.png" alt="未更改目录"></p>
+<p>我更改了目录，并且目录下没有 index.html，会显示<code>DocumentRoot</code>目录，如图</p>
+<p><img src="i/17890238-b990fa54350b8418.png" alt=""></p>
 <h2 id="%E6%B5%8B%E8%AF%95">测试</h2>
-<p>写一个简单的代码<img src="i/17890238-1220464dc9becc08.png" alt="">
-<img src="i/17890238-c05d5b70addac011.png" alt="测试">
-<img src="i/17890238-6a5aa3e6e1988b31.png" alt="success">
-可以看到成功执行。现在在就可以在windows下<s>愉快的</s>写网站了。</p>
+<p>写一个简单的代码</p>
+<p><img src="i/17890238-1220464dc9becc08.png" alt=""></p>
+<p><img src="i/17890238-c05d5b70addac011.png" alt="测试">
+<img src="i/17890238-6a5aa3e6e1988b31.png" alt="success"></p>
+<p>可以看到成功执行。现在在就可以在windows下<s>愉快的</s>写网站了。</p>
 <h2 id="%E6%9C%80%E5%90%8E%E9%99%84%E4%B8%8A%E5%87%A0%E4%B8%AA%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">最后附上几个常用命令</h2>
 <ol>
 <li>安装apache服务</li>
@@ -439,8 +455,10 @@ blockquote {
 </ol>
 <pre class="hljs"><code><div>httpd.exe -k install -n &quot;MyServiceName&quot; -f &quot;c:\files\my.conf&quot;
 </div></code></pre>
-<p>注：若不使用特殊参数（如httpd.exe -k install），服务名称为Apache2.X，配置文件为conf\httpd.conf
-4) 移除一个Apache服务</p>
+<p>注：若不使用特殊参数（如httpd.exe -k install），服务名称为Apache2.X，配置文件为conf\httpd.conf</p>
+<ol start="4">
+<li>移除一个Apache服务</li>
+</ol>
 <pre class="hljs"><code><div>httpd.exe -k uninstall
 </div></code></pre>
 <ol start="5">
@@ -448,20 +466,17 @@ blockquote {
 </ol>
 <pre class="hljs"><code><div>httpd.exe -k uninstall -n &quot;MyServiceName&quot;
 </div></code></pre>
-<ol start="2">
-<li>管理Apache服务</li>
-</ol>
-<ol>
+<ol start="6">
 <li>启动已安装的Apache服务</li>
 </ol>
 <pre class="hljs"><code><div>httpd.exe -k start
 </div></code></pre>
-<ol start="2">
+<ol start="7">
 <li>停止已安装的Apache服务</li>
 </ol>
 <pre class="hljs"><code><div>httpd.exe -k stop || httpd.exe -k shutdown
 </div></code></pre>
-<ol start="3">
+<ol start="8">
 <li>重启已安装的Apache服务(迫使服务重读配置文件，适用于修改配置文件后)</li>
 </ol>
 <pre class="hljs"><code><div>httpd.exe -k restart
