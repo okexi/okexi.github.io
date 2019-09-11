@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Article</title>
@@ -17,30 +18,31 @@
     height: 300px;
     border-radius: 5px;
   }
-  a :hover{
-  transform: scale(1.03);
+
+  a :hover {
+    transform: scale(1.03);
   }
 </style>
 
 <body>
   <header id="header" style="position: relative">
   </header>
-  <div style="margin: auto;max-width: 650px;"   id='main'>
-      <div  id='questin' >
-        <div v-for="item in json" transition name="fade">
-          <div >
-              <a :href=' item.url'target="_blank">
-                  <img :src="item.url+'index.png'" alt="">
-                  <h3 style="padding-top: 5px">{{item.title}}</h3>
-                </a>
-               <a :href="item.kind" class="text-muted">{{item.kind}}</a>
-                <i class="fa fa-calendar" style="padding-left: 10px"></i>
-               <span class="text-muted">{{item.creatime}}</span>
-               <i class="fa fa-clock-o" style="padding-left:20px" v-if="item.show"></i>
-               <span class="text-muted">{{item.updatime}}</span>
-               <!-- <hr align="left" style="height:3px;border:none;border-top:3px groove skyblue;width:90%; "/> -->
-               <hr style="border:none">
-          </div>
+  <div style="margin: auto;max-width: 650px;" id='main'>
+    <div id='questin'>
+      <div v-for="item in json" transition name="fade">
+        <div>
+          <a :href=' item.url' target="_blank">
+            <img :src="item.url+'index.png'" alt="">
+            <h3 style="padding-top: 5px">{{item.title}}</h3>
+          </a>
+          <a :href="item.kind" class="text-muted">{{item.kind}}</a>
+          <i class="fa fa-calendar" style="padding-left: 10px"></i>
+          <span class="text-muted">{{item.creatime}}</span>
+          <i class="fa fa-clock-o" style="padding-left:20px" v-if="item.show"></i>
+          <span class="text-muted">{{item.updatime}}</span>
+          <!-- <hr align="left" style="height:3px;border:none;border-top:3px groove skyblue;width:90%; "/> -->
+          <hr style="border:none">
+        </div>
       </div>
     </div>
   </div>
@@ -50,7 +52,7 @@
   var init = new Vue({
     el: '#main',
     data: {
-      json:[
+      json: [
       ]
     },
     methods: {
@@ -58,15 +60,15 @@
         $.get("config/config.json", function (r) {
           r.art.forEach(element => {
             console.log(element.updatime);
-            if(element.updatime!="null"){
-              element.show=true;
+            if (element.updatime != "null") {
+              element.show = true;
             }
-            else{
-              element.updatime='';
+            else {
+              element.updatime = '';
             }
           });
           Vue.set(init, 'json', r.art);
-            console.log(init.json);
+          console.log(init.json);
         })
       }
     }
