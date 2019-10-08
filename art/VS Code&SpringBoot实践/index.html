@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VS Code&SpringBoot实践</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	max-width: 900px;
+	margin: auto;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="vs-code-%E9%85%8D%E7%BD%AE%E8%BF%90%E8%A1%8Cspringboot">VS Code 配置运行SpringBoot</h1>
+<h2 id="%E9%9C%80%E8%A6%81%E5%87%86%E5%A4%87%E7%9A%84%E4%B8%9C%E8%A5%BF">需要准备的东西</h2>
+<ul>
+<li><a href="https://code.visualstudio.com/#alt-downloads">Visual Studio Code</a> 建议选择System Installer</li>
+<li>Java</li>
+<li><a href="https://gradle.org/releases/">Gradle</a>用于生成jar包，如果你不需要生成jar包可以不必下载</li>
+</ul>
+<h2 id="%E5%BC%80%E5%A7%8B">开始</h2>
+<p>首先用 VS Code 打开你需要存放项目的文件夹，在插件里搜索<code>springboot</code>，选择一个集成包插件，这样一次就可以安装完全所有的插件</p>
+<p><img src="i/1.png" alt=""></p>
+<p>然后按<code>F1</code>打开顶部命令栏,输入<code>spring</code> Code会自动搜索，选择你的构建方式即可，推荐使用Gradle</p>
+<p><img src="i/2.png" alt=""></p>
+<p>然后选择你使用的语言，输入你的项目名称</p>
+<p><img src="i/3.png" alt=""></p>
+<p>选择你需要使用的Spring Boot 版本</p>
+<p><img src="i/4.png" alt=""></p>
+<p>最后添加你需要的依赖项，如果你不清楚需要哪些依赖，推荐你添加以下三个</p>
+<p><img src="i/5.png" alt=""></p>
+<ul>
+<li>
+<p>Spring Web Tomcat客户端，提供服务器，可以实时调试</p>
+</li>
+<li>
+<p>DevTools 一些贴心小功能，比如你作出代码更改保存后会自动重启项目以应用更改</p>
+</li>
+<li>
+<p>Lombok 支持Lombok注解，省去Set/Get函数，需要注意，这里添加依赖后仅仅是项目支持Lombok注解，VS Code要想实时显示注解需要安装此款插件，才能在代码提示中显示Lombok函数</p>
+<p><img src="i/6.png" alt=""></p>
+</li>
+</ul>
+<h4 id="%E4%B8%8B%E9%9D%A2%E5%BC%80%E5%A7%8B%E5%86%99%E6%88%91%E4%BB%AC%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AAcontroller%EF%BC%88%E4%BB%A5java%E4%B8%BA%E4%BE%8B%EF%BC%89">下面开始写我们的第一个Controller（以Java为例）</h4>
+<p>下面是一个Spring Boot 的推荐目录设置</p>
+<pre class="hljs"><code><div>root package结构：com.example.myproject
+应用主类Application.java置于root package下，通常我们会在应用主类中做一些框架配置扫描等配置，我们放在root package下可以帮助程序减少手工配置来加载到我们希望被Spring加载的内容
+实体（Entity）与数据访问层（Repository）置于com.example.myproject.domain包下
+逻辑层（Service）置于com.example.myproject.service包下
+Web层（web）置于com.example.myproject.web包下
+com
+  +- example
+    +- myproject
+      +- Application.java
+      |
+      +- domain
+      |  +- Customer.java
+      |  +- CustomerRepository.java
+      |
+      +- service
+      |  +- CustomerService.java
+      |
+      +- web
+      |  +- CustomerController.java
+      |
+</div></code></pre>
+<p>如果你刚刚接触Spring Boot可以先不必按照此目录配置，在使用过程中就会逐渐找到适合的目录设置。这里我们就先在demo目录下创建web文件夹，并创建一个Controller，我这里命名成<code>MainController</code>,写入一些代码，你的输入顺序应该是</p>
+<p><img src="i/1.jpg" alt=""></p>
+<p>如果你需要返回html文件，把<code>@RestController</code>改成<code>@Controller</code>把文件放在 resources/static文件夹下直接返回文件名称即可。（不推荐返回页面）文章最后介绍不推荐的原因</p>
+<p><img src="i/2.jpg" alt=""></p>
+<p>按<code>F5</code>启动我们的项目，VS Code会自动帮我们生成<code>lauch.json</code>配置文件，在调试界面选择我们的Application，点击小三角，如果你安装了gradle在命令行输入<code>gradle bootRun</code>效果相同，不过VS Code 启动可以加断点调试</p>
+<p><img src="i/8.png" alt=""></p>
+<p>由于我们添加了web依赖，可以看到 Tomcat 已经运行在 8080 端口</p>
+<p><img src="i/9.png" alt=""></p>
+<p>打开浏览器，输入<code>localhost:8080</code>即可查看</p>
+<p><img src="i/4.jpg" alt=""></p>
+<p>返回html网页的为</p>
+<p><img src="i/3.jpg" alt=""></p>
+<h2 id="%E7%A7%BB%E6%A4%8D-jar%E5%8C%85%E5%88%B0linux%E4%BB%A5ubuntu%E4%B8%BA%E4%BE%8B">移植 jar包到Linux以Ubuntu为例</h2>
+<p>在命令行输入<code>gradle build</code>构建生成项目</p>
+<p><img src="i/5.jpg" alt=""></p>
+<p>可以在<code>build/libs</code>文件夹下找到生成的jar包，我这里使用scp命令发送到Ubuntu</p>
+<p><img src="i/12.png" alt=""></p>
+<p>可以看到成功运行</p>
+<p><img src="i/6.jpg" alt=""></p>
+<p>需要长时间运行在后台的话使用<code>nohup java -jar main.jar &gt; logs &amp; </code>命令，即可贮存后台可以关闭命令窗口，把命令输出到logs文件</p>
+<p><img src="i/7.jpg" alt=""></p>
+<h2 id="%E6%9C%80%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8nginx%E4%BD%9C%E4%B8%BA%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86">最后，使用Nginx作为反向代理</h2>
+<p>前后端分离的趋势，Nginx是一款优秀的反向代理服务器，借助它可以促使我们的项目前后端分离，静态页面的跳转由Nginx完成，而后端Tomcat仅处理用户数据。这样做的好处很多，比如：实现负载均衡，加速访问，隐藏后端服务器地址，更加安全。关于如何配置Nginx，可以参考我的<a href="../windows%E4%B8%8B%E9%85%8D%E7%BD%AEnginx/">这篇文章</a></p>
+<p>这里介绍如何实现负载均衡，打开Nginx的配置文件在<code>nginx安装目录/conf/nginx.conf</code>下，设置 <code>proxy_pass</code> 后 在<code>upstream</code>里添加IP地址即可，后面也可以跟上权重 <code>weight</code> 充分发挥服务器的优势</p>
+<p><img src="i/14.png" alt=""></p>
+<p><img src="i/16.png" alt=""></p>
+<p>结果如图,我们更改了本地的代码，可以看到两次请求，分别发送到了两个服务器</p>
+<p><img src="i/15.png" alt=""></p>
+<p>不过上图的设置所有的请求都被送到了后台，实际使用时不会这样设置，比如我设置为只有以java开头的请求传送到后台</p>
+<p><img src="i/13.png" alt=""></p>
+<h2 id="%E7%9C%9F%E7%9A%84%E6%9C%80%E5%90%8E">真的最后</h2>
+<p>这是暑假学习的前后端相关知识，最近抽了个时间又走了一遍流程，有了不少新的收获，写下来算是交流经验，同时也给自己加深印象吧。当然这也是基础的一些皮毛，之前我对Java是不怎么感冒的，直到我认识到 Spring 才认识到Java的春天。诸君，共勉！</p>
+
+</body>
+</html>
