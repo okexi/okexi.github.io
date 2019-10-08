@@ -452,7 +452,7 @@ ALTER TABLE book DROP author;删除book表的author栏
 </div></code></pre>
 <h2 id="%E6%94%B9">改</h2>
 <pre class="hljs"><code><div>UPDATE book SET name=&quot;newvalue&quot; where author=&quot;tiaojian&quot;; 修改book表author=&quot;tiaojian&quot;处的name为newvalue
-ALTER TABLE person MODIFY number BIGINT NOT NULL;修改person 表的number栏为bigint;
+ALTER TABLE person MODIFY number BIGINT NOT NULL;修改person 表的number栏为bigint; TRUNCATE book;重置 book表 ，将删除表中所有数据
 </div></code></pre>
 <h2 id="%E6%9F%A5">查</h2>
 <pre class="hljs"><code><div>desc tablename; 查看tablename表的结构
