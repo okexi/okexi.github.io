@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>windows下配置nginx</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	max-width: 900px;
+	margin: auto;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="windows-%E4%B8%8B%E9%85%8D%E7%BD%AE-nginx">Windows 下配置 nginx</h1>
+<h2 id="%E9%A6%96%E5%85%88%E9%9C%80%E8%A6%81%E5%87%86%E5%A4%87%E7%9A%84%E6%96%87%E4%BB%B6">首先需要准备的文件</h2>
+<p><a href="http://nginx.org/en/download.html">Nginx</a></p>
+<h2 id="%E5%AE%89%E8%A3%85">安装</h2>
+<h2 id="%E5%BC%80%E5%A7%8B%E9%85%8D%E7%BD%AE">开始配置</h2>
+<h3 id="%E4%BD%9C%E4%B8%BAphp%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%8C%E4%BB%A5-speedphp-%E4%B8%BA%E4%BE%8B">作为PHP服务器，以 speedphp 为例</h3>
+<p>进入 <code>nginx</code>文件夹下,打开<code>conf/nginx.conf</code>，添加如下</p>
+<pre class="hljs"><code><div>location / {
+          root   D:/code/web;//根据你的实际情况输入，此为index.php的目录
+          index  index.html index.php index.jsp;//注意添加 index.php
+          autoindex on;
+           if ( -f $request_filename) {
+              break;
+          }
+          if ( !-e $request_filename) {
+                rewrite (.*) /index.php;
+          }
+location ~ \.php$ {
+         root           D:/code/web;//根据你的实际情况输入，此为index.php的目录
+         fastcgi_pass   127.0.0.1:9000;
+         fastcgi_index  index.php;
+         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+          fastcgi_buffers 8 128k;
+         include        fastcgi_params;
+      }
+</div></code></pre>
+<p>修改完成后重启nginx或者使用<code>nginx -s reload</code>使更改生效
+同时定位到PHP所在目录 执行 <code>./php-cgi -b 127.0.0.1:9000  -c php.ini</code> 保持窗口不要关，打开浏览器输入相应地址即可访问</p>
+<h4 id="%E6%B3%A8%E5%86%8C%E4%B8%BA%E6%9C%8D%E5%8A%A1%E8%AE%BE%E7%BD%AE%E8%87%AA%E5%8A%A8%E5%BC%80%E5%90%AF">注册为服务设置自动开启</h4>
+<p>首先需要下载<a href="http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/2.0.2/">winsw</a>,下载后复制到nginx文件目录下，改一个你喜欢的名字，比如我改为<code>nginx-server</code>，另外新建一个同名xml，写入一下内容</p>
+<pre class="hljs"><code><div>&lt;service&gt;
+  &lt;!-- 服务 ID，命令行使用这个名字可以启动/停止服务 --&gt;
+  &lt;id&gt;nginx-server&lt;/id&gt;
+  &lt;!-- 服务名称，可任意，为了方便建议和 ID 一致 --&gt;
+  &lt;name&gt;nginx-server&lt;/name&gt;
+  &lt;!-- 服务描述，任意 --&gt;
+  &lt;description&gt;nginx-server.&lt;/description&gt;
+  &lt;!-- 启动程序名称，不用修改 --&gt;
+  &lt;executable&gt;nginx.exe&lt;/executable&gt;
+  &lt;!-- 停止服务时执行程序名称 --&gt;
+  &lt;!-- 解释一下为何用 Win 的 taskkill 命令。因为 Nginx 利用服务启动的情况下无法使用 nginx -s stop 或 nginx -s quiet 命令结束进程，会提示权限不足 --&gt;
+  &lt;stopexecutable&gt;taskkill&lt;/stopexecutable&gt;
+  &lt;!-- 以下三行是 taskkill 的参数，不用修改 --&gt;
+  &lt;stopargument&gt;/F&lt;/stopargument&gt;
+  &lt;stopargument&gt;/IM&lt;/stopargument&gt;
+  &lt;stopargument&gt;nginx.exe&lt;/stopargument&gt;
+  &lt;!-- 日志路径，将生成日志至 nginx/logs 目录 --&gt;
+  &lt;logpath&gt;logs&lt;/logpath&gt;
+&lt;/service&gt;
+</div></code></pre>
+<p><img src="i/4.png" alt=""></p>
+<p>以管理员方式打开命令行，进入改目录 输入<code>nginx-server install</code> 即可安装为服务</p>
+<p><img src="i/5.png" alt=""></p>
+<p>同样将该文件复制一份到php根目录，重命名为<code>PHP-CGI</code>,新建<code>PHP-CGI.xml</code>写入如下</p>
+<pre class="hljs"><code><div>&lt;service&gt;
+   &lt;id&gt;PHP-CGI&lt;/id&gt;
+   &lt;name&gt;PHP-CGI&lt;/name&gt;
+   &lt;description&gt;PHP-CGI.&lt;/description&gt;
+   &lt;executable&gt;xxfpm.exe&lt;/executable&gt;
+   &lt;!-- 启动参数 --&gt;
+   &lt;startargument&gt;&quot;php-cgi.exe -c php.ini&quot;&lt;/startargument&gt;
+   &lt;startargument&gt;-n&lt;/startargument&gt;
+   &lt;!-- 启动进程数量，可修改，建议大于 1 --&gt;
+   &lt;startargument&gt;2&lt;/startargument&gt;
+   &lt;startargument&gt;-i&lt;/startargument&gt;
+   &lt;!-- 监听IP，默认一般都用 127.0.0.1 --&gt;
+   &lt;startargument&gt;127.0.0.1&lt;/startargument&gt;
+   &lt;startargument&gt;-p&lt;/startargument&gt;
+   &lt;!-- 监听端口，默认一般都用 9000 --&gt;
+   &lt;startargument&gt;9000&lt;/startargument&gt;
+   &lt;!-- 停止参数 --&gt;
+   &lt;stopexecutable&gt;taskkill&lt;/stopexecutable&gt;
+   &lt;stopargument&gt;/F&lt;/stopargument&gt;
+   &lt;stopargument&gt;/IM&lt;/stopargument&gt;
+   &lt;stopargument&gt;xxfpm.exe&lt;/stopargument&gt;
+   &lt;logpath&gt;logs&lt;/logpath&gt;
+&lt;/service&gt;
+</div></code></pre>
+<p>然后 <code>PHP_CGI install</code>即可，可以设置服务成自动启动。</p>
+<h3 id="%E5%8D%B8%E8%BD%BD">卸载</h3>
+<p>需要先停止服务，然后管理员运行命令行到目录下将之前的 install改成 uninstall即可卸载</p>
+<p><img src="i/6.png" alt=""></p>
+<h3 id="%E4%BD%9C%E4%B8%BA%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8">作为反向代理服务器</h3>
+<p>只需要设置好什么请求发送到后端即可，比如我设置的所有以Java开头的请求被传送到后端：设置 <code>proxy_pass</code> 后 在<code>upstream</code>填入后端服务器的地址和段口即可
+<img src="i/13.png" alt=""></p>
+<p>可以把一些静态资源同时交由Nginx处理</p>
+<p><img src="i/1.png" alt=""></p>
+
+</body>
+</html>
