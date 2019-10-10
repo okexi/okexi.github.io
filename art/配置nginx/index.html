@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Nginx 配置</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+<link rel="stylesheet" href="D:/code/web/css/md.min.css">
+<style>
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #fff;
+  color: black;
+}
+
+/* Gray DOCTYPE selectors like WebKit */
+.xml .hljs-meta {
+  color: #c0c0c0;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #007400;
+}
+
+.hljs-tag,
+.hljs-attribute,
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-name {
+  color: #aa0d91;
+}
+
+.hljs-variable,
+.hljs-template-variable {
+  color: #3F6E74;
+}
+
+.hljs-code,
+.hljs-string,
+.hljs-meta-string {
+  color: #c41a16;
+}
+
+.hljs-regexp,
+.hljs-link {
+  color: #0E0EFF;
+}
+
+.hljs-title,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-number {
+  color: #1c00cf;
+}
+
+.hljs-section,
+.hljs-meta {
+  color: #643820;
+}
+
+
+.hljs-class .hljs-title,
+.hljs-type,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-params {
+  color: #5c2699;
+}
+
+.hljs-attr {
+  color: #836C28;
+}
+
+.hljs-subst {
+  color: #000;
+}
+
+.hljs-formula {
+  background-color: #eee;
+  font-style: italic;
+}
+
+.hljs-addition {
+  background-color: #baeeba;
+}
+
+.hljs-deletion {
+  background-color: #ffc8bd;
+}
+
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #9b703f;
+}
+
+.hljs-doctag,
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="%E9%85%8D%E7%BD%AE-nginx">配置 nginx</h1>
+<h2 id="%E9%A6%96%E5%85%88%E9%9C%80%E8%A6%81%E5%87%86%E5%A4%87%E7%9A%84%E6%96%87%E4%BB%B6">首先需要准备的文件</h2>
+<p><a href="http://nginx.org/en/download.html">Nginx</a></p>
+<h2 id="windows%E4%B8%8B">Windows下</h2>
+<h2 id="%E5%BC%80%E5%A7%8B%E9%85%8D%E7%BD%AE">开始配置</h2>
+<h3 id="%E4%BD%9C%E4%B8%BAphp%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%8C%E4%BB%A5-speedphp-%E4%B8%BA%E4%BE%8B">作为PHP服务器，以 speedphp 为例</h3>
+<p>进入 <code>nginx</code>文件夹下,打开<code>conf/nginx.conf</code>，添加如下，nginx以正则匹配请求</p>
+<pre class="hljs"><code><div>location / {
+          root   D:/code/web;//根据你的实际情况输入，此为index.php的目录
+          index  index.html index.php index.jsp;//注意添加 index.php
+          autoindex on;
+           if ( -f $request_filename) {
+              break;
+          }
+          if ( !-e $request_filename) {
+                rewrite (.*) /index.php;
+          }
+location ~ \.php$ {
+         root           D:/code/web;//根据你的实际情况输入，此为index.php的目录
+         fastcgi_pass   127.0.0.1:9000;
+         fastcgi_index  index.php;
+         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+          fastcgi_buffers 8 128k;
+         include        fastcgi_params;
+      }
+</div></code></pre>
+<p>修改完成后重启nginx或者使用<code>nginx -s reload</code>使更改生效
+同时定位到PHP所在目录 执行 <code>./php-cgi -b 127.0.0.1:9000  -c php.ini</code> 保持窗口不要关，打开浏览器输入相应地址即可访问</p>
+<h4 id="%E6%B3%A8%E5%86%8C%E4%B8%BA%E6%9C%8D%E5%8A%A1%E8%AE%BE%E7%BD%AE%E8%87%AA%E5%8A%A8%E5%BC%80%E5%90%AF">注册为服务设置自动开启</h4>
+<p>首先需要下载<a href="http://repo.jenkins-ci.org/releases/com/sun/winsw/winsw/2.0.2/">winsw</a>,下载后复制到nginx文件目录下，改一个你喜欢的名字，比如我改为<code>nginx-server</code>，另外新建一个同名xml，写入一下内容</p>
+<pre class="hljs"><code><div>&lt;service&gt;
+  &lt;!-- 服务 ID，命令行使用这个名字可以启动/停止服务 --&gt;
+  &lt;id&gt;nginx-server&lt;/id&gt;
+  &lt;!-- 服务名称，可任意，为了方便建议和 ID 一致 --&gt;
+  &lt;name&gt;nginx-server&lt;/name&gt;
+  &lt;!-- 服务描述，任意 --&gt;
+  &lt;description&gt;nginx-server.&lt;/description&gt;
+  &lt;!-- 启动程序名称，不用修改 --&gt;
+  &lt;executable&gt;nginx.exe&lt;/executable&gt;
+  &lt;!-- 停止服务时执行程序名称 --&gt;
+  &lt;!-- 解释一下为何用 Win 的 taskkill 命令。因为 Nginx 利用服务启动的情况下无法使用 nginx -s stop 或 nginx -s quiet 命令结束进程，会提示权限不足 --&gt;
+  &lt;stopexecutable&gt;taskkill&lt;/stopexecutable&gt;
+  &lt;!-- 以下三行是 taskkill 的参数，不用修改 --&gt;
+  &lt;stopargument&gt;/F&lt;/stopargument&gt;
+  &lt;stopargument&gt;/IM&lt;/stopargument&gt;
+  &lt;stopargument&gt;nginx.exe&lt;/stopargument&gt;
+  &lt;!-- 日志路径，将生成日志至 nginx/logs 目录 --&gt;
+  &lt;logpath&gt;logs&lt;/logpath&gt;
+&lt;/service&gt;
+</div></code></pre>
+<p><img src="i/4.png" alt=""></p>
+<p>以管理员方式打开命令行，进入改目录 输入<code>nginx-server install</code> 即可安装为服务</p>
+<p><img src="i/5.png" alt=""></p>
+<p>同样将该文件复制一份到php根目录，重命名为<code>PHP-CGI</code>,新建<code>PHP-CGI.xml</code>写入如下</p>
+<pre class="hljs"><code><div>&lt;service&gt;
+   &lt;id&gt;PHP-CGI&lt;/id&gt;
+   &lt;name&gt;PHP-CGI&lt;/name&gt;
+   &lt;description&gt;PHP-CGI.&lt;/description&gt;
+   &lt;executable&gt;xxfpm.exe&lt;/executable&gt;
+   &lt;!-- 启动参数 --&gt;
+   &lt;startargument&gt;&quot;php-cgi.exe -c php.ini&quot;&lt;/startargument&gt;
+   &lt;startargument&gt;-n&lt;/startargument&gt;
+   &lt;!-- 启动进程数量，可修改，建议大于 1 --&gt;
+   &lt;startargument&gt;2&lt;/startargument&gt;
+   &lt;startargument&gt;-i&lt;/startargument&gt;
+   &lt;!-- 监听IP，默认一般都用 127.0.0.1 --&gt;
+   &lt;startargument&gt;127.0.0.1&lt;/startargument&gt;
+   &lt;startargument&gt;-p&lt;/startargument&gt;
+   &lt;!-- 监听端口，默认一般都用 9000 --&gt;
+   &lt;startargument&gt;9000&lt;/startargument&gt;
+   &lt;!-- 停止参数 --&gt;
+   &lt;stopexecutable&gt;taskkill&lt;/stopexecutable&gt;
+   &lt;stopargument&gt;/F&lt;/stopargument&gt;
+   &lt;stopargument&gt;/IM&lt;/stopargument&gt;
+   &lt;stopargument&gt;xxfpm.exe&lt;/stopargument&gt;
+   &lt;logpath&gt;logs&lt;/logpath&gt;
+&lt;/service&gt;
+</div></code></pre>
+<p>然后 <code>PHP_CGI install</code>即可，可以设置服务成自动启动。</p>
+<h3 id="%E5%8D%B8%E8%BD%BD">卸载</h3>
+<p>需要先停止服务，然后管理员运行命令行到目录下将之前的 install改成 uninstall即可卸载</p>
+<p><img src="i/6.png" alt=""></p>
+<h3 id="%E4%BD%9C%E4%B8%BA%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8">作为反向代理服务器</h3>
+<p>只需要设置好什么请求发送到后端即可，比如我设置的所有以Java开头的请求被传送到后端：设置 <code>proxy_pass</code> 后 在<code>upstream</code>填入后端服务器的地址和段口即可</p>
+<p><img src="i/13.png" alt=""></p>
+<p>可以把一些静态资源同时交由Nginx处理</p>
+<p><img src="i/1.png" alt=""></p>
+<h2 id="linux%E4%B8%8B-%E4%BB%A5ubuntu%E4%B8%BA%E4%BE%8B">Linux下 以Ubuntu为例</h2>
+<p>可以使用apt-get安装，这里介绍官网下载安装方法。首先使用tar命令解压下载的源码包</p>
+<pre class="hljs"><code><div>tar -zvxf nginx*.tar.gz
+</div></code></pre>
+<p>进入如解压出来的目录，输入</p>
+<pre class="hljs"><code><div>mkdir /usr/local/nginx //创建目录
+./configure --prefix=/usr/local/nginx //指定安装到/usr/local/nginx目录下
+</div></code></pre>
+<p>此过程如果出现以下 error，可以参考以下处理方法</p>
+<p><code>error: the HTTP rewrite module requires the PCRE library.</code></p>
+<p>sudo apt-get install libpcre3 libpcre3-dev //Ubuntu
+yum install pcre-devel或者pcre-*  //cent或者其他</p>
+<p><code>error: the HTTP gzip module requires the zlib library.</code></p>
+<p>sudo apt-get install zlib*
+yum install zlib*</p>
+<p>如果还有其他错误，请搜索解决吧。然后安装</p>
+<pre class="hljs"><code><div>make &amp;&amp; make install //如果出现 Permission Denied 请加sudo
+</div></code></pre>
+<p>安装成功之后就可以进入安装目录，目录结构与Windows下相同，编辑conf/nginx.conf，同windows下</p>
+<h3 id="%E9%85%8D%E7%BD%AE%E8%87%AA%E5%8A%A8%E5%90%AF%E5%8A%A8">配置自动启动</h3>
+<p>使用sh脚本启动nginx,一个简单的脚本</p>
+<pre class="hljs"><code><div>sudo touch /etc/init.d/nginx
+sudo vim /etc/init.d/nginx
+</div></code></pre>
+<p>输入以下内容</p>
+<pre class="hljs"><code><div>#!/bin/bash
+case $1 ind
+	start)
+		sudo nginx;;
+	stop)
+		sudo nginx -s quit;;
+  reload）
+    sudo nginx -s reload;;
+esac
+exit 0
+</div></code></pre>
+<p>然后刷新脚本，defaults 后面的数值自由设定，越小启动的越早20会比30早启动,两个命令都可以选择一个就行</p>
+<pre class="hljs"><code><div>update-rc.d nginx defaults 20 
+sudo systemctl daemon-reload
+</div></code></pre>
+<p>然后测试下我们的配置正确与否,能正常停止关闭即可</p>
+<pre class="hljs"><code><div>sudo service nginx stop
+service nginx status
+sudo service nginx start
+service nginx status
+</div></code></pre>
+<p><img src="i/14.png" alt=""></p>
+<h3 id="%E5%A6%82%E6%9E%9C%E4%BD%A0%E7%94%A8nginx%E5%81%9Aphp%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E8%AF%9Dlinux%E4%B8%8B%E6%9C%89php-fpm%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E5%83%8Fwindows%E9%82%A3%E6%A0%B7%E5%86%99php%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC">如果你用nginx做php服务器的话Linux下有PHP-fpm，不需要像windows那样写php启动脚本</h3>
+<pre class="hljs"><code><div>sudo apt-get install php* php*-fpm
+</div></code></pre>
+<p>默认安装目录在<code>/etc/php</code>,注意修改 <code>php.ini</code> 和<code>php-fpm</code>的设置，这里介绍php-fpm必须设置的地方,<code>listen=127.0.0.1:9000</code></p>
+<pre class="hljs"><code><div>sudo vim /etc/php/7.2/fpm/php-fpm.conf //如果这里没有listen选项就在下面那条命令里
+sudo vim /etc/php/7.2/fpm/pool.d/*.conf
+</div></code></pre>
+<p>这样php-fpm才会监听9000端口，接收到来自nginx的请求</p>
+<p><img src="i/12.png" alt=""></p>
+
+</body>
+</html>

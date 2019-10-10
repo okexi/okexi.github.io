@@ -1,13 +1,10 @@
-# Windows 下配置 nginx
+# 配置 nginx
 
 ## 首先需要准备的文件
 [Nginx](http://nginx.org/en/download.html)
-## 安装
-
-## 开始配置
-
-  ### 作为PHP服务器，以 speedphp 为例
-  进入 `nginx`文件夹下,打开`conf/nginx.conf`，添加如下
+## Windows下
+*  ### 作为PHP服务器，以 speedphp 为例
+  进入 `nginx`文件夹下,打开`conf/nginx.conf`，添加如下，nginx以正则匹配请求
   ```
   location / {
             root   D:/code/web;//根据你的实际情况输入，此为index.php的目录
@@ -90,10 +87,84 @@
 需要先停止服务，然后管理员运行命令行到目录下将之前的 install改成 uninstall即可卸载
 
 ![](i/6.png)
-  ### 作为反向代理服务器
+* ### 作为反向代理服务器
 只需要设置好什么请求发送到后端即可，比如我设置的所有以Java开头的请求被传送到后端：设置 `proxy_pass` 后 在`upstream`填入后端服务器的地址和段口即可
+
 ![](i/13.png)
 
 可以把一些静态资源同时交由Nginx处理
 
 ![](i/1.png)
+## Linux下 以Ubuntu为例
+可以使用apt-get安装，这里介绍官网下载安装方法。首先使用tar命令解压下载的源码包
+```
+tar -zvxf nginx*.tar.gz
+```
+进入如解压出来的目录，输入
+```
+mkdir /usr/local/nginx //创建目录
+./configure --prefix=/usr/local/nginx //指定安装到/usr/local/nginx目录下
+```
+此过程如果出现以下 error，可以参考以下处理方法
+
+`error: the HTTP rewrite module requires the PCRE library.`
+
+sudo apt-get install libpcre3 libpcre3-dev //Ubuntu
+yum install pcre-devel或者pcre-*  //cent或者其他
+
+`error: the HTTP gzip module requires the zlib library.`
+
+sudo apt-get install zlib*
+yum install zlib*
+
+如果还有其他错误，请搜索解决吧。然后安装
+```
+make && make install //如果出现 Permission Denied 请加sudo
+```
+安装成功之后就可以进入安装目录，目录结构与Windows下相同，编辑conf/nginx.conf，同windows下
+### 配置自动启动
+使用sh脚本启动nginx,一个简单的脚本
+```
+sudo touch /etc/init.d/nginx
+sudo vim /etc/init.d/nginx
+```
+输入以下内容
+```
+#!/bin/bash
+case $1 ind
+	start)
+		sudo nginx;;
+	stop)
+		sudo nginx -s quit;;
+  reload）
+    sudo nginx -s reload;;
+esac
+exit 0
+```
+然后刷新脚本，defaults 后面的数值自由设定，越小启动的越早20会比30早启动,两个命令都可以选择一个就行
+```
+update-rc.d nginx defaults 20 
+sudo systemctl daemon-reload
+```
+然后测试下我们的配置正确与否,能正常停止关闭即可
+```
+sudo service nginx stop
+service nginx status
+sudo service nginx start
+service nginx status
+```
+![](i/14.png)
+* ### 如果你用nginx做php服务器的话Linux下有PHP-fpm，不需要像windows那样写php启动脚本
+```
+sudo apt-get install php* php*-fpm
+```
+默认安装目录在`/etc/php`,注意修改 `php.ini` 和`php-fpm`的设置，这里介绍php-fpm必须设置的地方,`listen=127.0.0.1:9000`
+```
+sudo vim /etc/php/7.2/fpm/php-fpm.conf //如果这里没有listen选项就在下面那条命令里
+sudo vim /etc/php/7.2/fpm/pool.d/*.conf
+```
+这样php-fpm才会监听9000端口，接收到来自nginx的请求
+
+![](i/12.png)
+* ### 作为反向代理服务器
+  只需按照windows下设置即可
