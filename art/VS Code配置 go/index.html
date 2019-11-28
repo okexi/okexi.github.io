@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>VS Code 配置 golang</title>
+        <link rel="stylesheet" href="/css/md.min.css">
+    </head>
+    <body>
+        <h1 id="vs-code-%e9%85%8d%e7%bd%ae-golang">VS Code 配置 golang</h1>
+<h2 id="%e9%9c%80%e8%a6%81%e7%9a%84%e6%96%87%e4%bb%b6">需要的文件</h2>
+<p><a href="https://studygolang.com/dl" target="_blank">Go</a></p>
+<h2 id="%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c">准备工作</h2>
+<p>打开命令行 输入 <code>go env</code>能打印东西说明 go 安装成功</p>
+<p><img src="i/0.jpg" alt=""></p>
+<p>安装完成 go 后，首先在环境变量里添加</p>
+<pre><code><div> GOROOT go语言安装位置
+ GOPATH 你希望的工作目录，后续依赖包会下载到此目录下的 src 文件夹下,如果不指定 会自动创建并下载到用户目录的 go/src文件夹下
+</div></code></pre>
+<p>比如我的</p>
+<p><img src="i/1.jpg" alt=""></p>
+<h2 id="%e9%85%8d%e7%bd%ae-vs-code">配置 VS Code</h2>
+<p>新建一个文件夹作为 GO 的编写目录，用 vscode 打开，新建一个 go 文件，然后 点击安装 go 拓展</p>
+<p><img src="i/2.jpg" alt=""></p>
+<p>安装代码检查工具，如果未弹出选项，可以关闭vs code 重新打开</p>
+<p><img src="i/3.png" alt=""></p>
+<p><img src="i/4.png" alt=""></p>
+<p>可以看到下载到了 $GOPATH/bin目录下，然后编写代码，按下<code>f5</code>或者到调试界面点绿色的小三角就能运行，不需要配置 vs code</p>
+<p><img src="i/5.png" alt=""></p>
+<h2 id="%e4%bc%98%e5%8c%96%e8%ae%be%e7%bd%ae%e4%be%bf%e4%ba%8e%e4%bd%bf%e7%94%a8">优化设置，便于使用</h2>
+<p>设置-拓展 定位到 <code>GO configuration</code> 这个就是 go 拓展的设置</p>
+<p><img src="i/6.png" alt=""></p>
+<p>打开如下选项</p>
+<ol>
+<li>
+<p>自动导入使用的包</p>
+<p><img src="i/autoimport.png" alt=""></p>
+</li>
+<li>
+<p>关闭保存时构建，有时会带来不必要的麻烦</p>
+<p><img src="i/build.png" alt=""></p>
+</li>
+<li>
+<p>代码自动补全</p>
+<p><img src="i/7.png" alt=""></p>
+</li>
+<li>
+<p>更改 doc tool</p>
+<p><img src="i/8.png" alt=""></p>
+</li>
+<li>
+<p>自动推断go path(可选)</p>
+<p><img src="i/infergopath.png" alt=""></p>
+</li>
+<li>
+<p>如果你想使用在线服务进行代码补全相关，如果你使用 go mod，推荐开启，不使用 go mod 开启的话会找不到同一个包下其他文件的函数
+<img src="i/goon.png" alt=""></p>
+</li>
+</ol>
+<p>完成之后的设置json</p>
+<pre><code><div>&quot;go.buildOnSave&quot;: &quot;off&quot;,
+    &quot;go.autocompleteUnimportedPackages&quot;: true,
+    &quot;go.docsTool&quot;: &quot;gogetdoc&quot;,
+    &quot;go.useCodeSnippetsOnFunctionSuggest&quot;: true,
+    &quot;go.useCodeSnippetsOnFunctionSuggestWithoutType&quot;: true,
+    &quot;go.gotoSymbol.includeGoroot&quot;: true,
+    &quot;go.gotoSymbol.includeImports&quot;: true,
+    &quot;go.toolsGopath&quot;: &quot;D:\\Programs\\Go\\pkg\\tool\\windows_amd64&quot;,//这个根据你自己的目录在go root下 （可选）
+    &quot;go.useLanguageServer&quot;: true,
+</div></code></pre>
+<p>设置完成之后，输入 json 可以看到代码提示，会自动导入 <code>encoding/json</code> 包,下图未未开启 language server，输入过程即提示</p>
+<p><img src="i/json.png" alt=""></p>
+<p>下图未开启 language server ，输入 . 之后才提示</p>
+<p><img src="i/jsono.png" alt=""></p>
+<h2 id="%e5%bc%80%e5%90%af-go-mod">开启 go mod</h2>
+<ul>
+<li>使用 go mod 并不要求你的项目源码放到 $GOPATH 下，所以你的新项目可以放到任意你喜欢的路径。在项目根目录下执行go mod init，会生成一个 go.mod 文件。然后你可以在其中增加你的依赖</li>
+</ul>
+<p>命令行输入</p>
+<pre><code><div>go mod init 你的项目名称（随便）
+</div></code></pre>
+<p>一些常用的 go mod 命令</p>
+<ul>
+<li>go mod download: 下载依赖的 module 到本地 cache</li>
+<li>go mod edit: 编辑 go.mod</li>
+<li>go mod graph: 打印模块依赖图</li>
+<li>go mod init: 在当前目录下初始化 go.mod(就是会新建一个 go.mod 文件)</li>
+<li>go mod tidy: 整理依赖关系，会添加丢失的 module，删除不需要的 module</li>
+<li>go mod vender: 将依赖复制到 vendor 下</li>
+<li>go mod verify: 校验依赖</li>
+<li>go mod why: 解释为什么需要依赖</li>
+</ul>
+<h4 id="%e8%87%b3%e6%ad%a4%e4%bd%a0%e7%9a%84-vs-code-%e5%b7%b2%e7%bb%8f%e8%83%bd%e5%a4%9f%e5%be%88%e5%a5%bd%e7%9a%84%e7%bc%96%e5%86%99-golang-%e4%ba%86">至此，你的 vs code 已经能够很好的编写 golang 了！</h4>
+
+    </body>
+    </html>
